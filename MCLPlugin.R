@@ -34,6 +34,7 @@ mcl <- function (M, 	# Matrix
   for (i in 1:iter) {
     old.M <- M;
     M.norm <- norm(M);
+    print(dim(M.norm));
     M <- M.norm%*%M.norm;
     M <- inflate(M, inf);
     M <- norm(M);
