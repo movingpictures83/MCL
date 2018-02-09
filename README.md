@@ -2,6 +2,7 @@
 # Language: R
 # Input: CSV (network)
 # Output: CSV (clusters)
+# Tested with: PluMA 1.0, R 3.2.5
 
 PluMA plugin to take a weighted network and run Markov Clustering (van Dongen, 2000).
 The plugin accepts as input a CSV file representing the network, with nodes represented
