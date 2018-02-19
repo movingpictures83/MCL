@@ -9,6 +9,7 @@
 
 ########################################
 ## Functions
+source("RPluMA.R")
 
 # Inflation step of MCL
 inflate <- function (M,
@@ -34,7 +35,6 @@ mcl <- function (M, 	# Matrix
   for (i in 1:iter) {
     old.M <- M;
     M.norm <- norm(M);
-    print(dim(M.norm));
     M <- M.norm%*%M.norm;
     M <- inflate(M, inf);
     M <- norm(M);
@@ -42,7 +42,8 @@ mcl <- function (M, 	# Matrix
       break;
     }
     if (verbose) {
-      print (paste ("iteration", i));
+      #print (paste ("iteration", i));
+      log(paste ("iteration", i));
     } 
   }
   return (M);
