@@ -121,7 +121,12 @@ mcl.list <<- collect.mcl.clusters2(junk,colnames(mcl.clusters),minClusSize_L1);
 
 output <- function(outputfile) {
 for(j in 1:length(mcl.list)){
+     if (j == 1) {
+	write.table(mcl.list[[j]], file=outputfile, sep=",", append=FALSE, col.names=NA, na="");
+     }
+     else {
 	write.table(mcl.list[[j]], file=outputfile, sep=",", append=TRUE, col.names=NA, na="");
+     }
 }
 }
 
