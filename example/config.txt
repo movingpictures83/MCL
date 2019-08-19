@@ -1,2 +1,2 @@
 Prefix plugins/MCL/example/
-Plugin MCL inputfile corrP.csv outputfile corrP.clusters.mcl.csv
+Plugin MCL inputfile corrP.csv outputfile corrP.clusters.mcl
