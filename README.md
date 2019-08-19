@@ -7,7 +7,7 @@
 PluMA plugin to take a weighted network and run Markov Clustering (van Dongen, 2000).
 The plugin accepts as input a CSV file representing the network, with nodes represented
 as both rows and columns and entry (i, j) is the weight of the edge from node i to node j.
-The plugin then outputs the clusters also as a CSV file, in the following format:
+The plugin then outputs clusters also as a CSV file, in the following format:
 
 "","x"
 "1","Family.Porphyromonadaceae.0005"
@@ -28,3 +28,7 @@ The plugin then outputs the clusters also as a CSV file, in the following format
 "12","Oscillibacter.0004"
 
 Note each cluster is separated by the delimiter "","x".
+
+Updated August 2019: The plugin has been extended for first- and second- level clustering
+First-level clustering files end with *.1.csv and second-level with *.2.csv
+Individual cluster data is also output with the second-level clustering
