@@ -85,49 +85,85 @@ pc <<- read.csv(inputfile);
 run <- function() {
 pc <<- pc[,-1] #Status is present
 
-mcl.data <- as.matrix(pc)
+mcl.data <<- as.matrix(pc)
 
 #########################################################
 #Second step, calculate the first clustering
 #########################################################
 #Do mapping
 #Map (values in the config file)
-mcl.data.ext <- mcl.data;
+mcl.data.ext <<- mcl.data;
 
 # Set negative edges to zero (don't think they should be used in the clustering), new TMC
 for (i in 1:nrow(mcl.data.ext)) {
    for (j in 1:ncol(mcl.data.ext)) {
       if (mcl.data.ext[i, j] < 0) {
-         mcl.data.ext[i, j] <- 0;
+         mcl.data.ext[i, j] <<- 0;
       }
    }
 }
 
 #Absolute Values
-mcl.data.abs <- abs(mcl.data.ext);
+mcl.data.abs <<- abs(mcl.data.ext);
 
 #Remove columns and rows with only 0s, normalization cannot be done in mcl if a column value is 0
-mcl.data.abs <- mcl.data.abs[,which(colSums(mcl.data.abs[,])!=0)]
-mcl.data.abs <- mcl.data.abs[which(rowSums(mcl.data.abs[,])!=0),]
+mcl.data.abs <<- mcl.data.abs[,which(colSums(mcl.data.abs[,])!=0)]
+mcl.data.abs <<- mcl.data.abs[which(rowSums(mcl.data.abs[,])!=0),]
 
-# Launch MCL
-inf_lev1 <- 1.5
-minClusSize_L1 <- 3
-mcl.clusters <- mcl(mcl.data.abs,inf_lev1,2000, verbose = T, heatmaps=F);
+# Launch MCL, LEVEL 1
+inf_lev1 <<- 1.5
+inf_lev2 <<- 1.5
+minClusSize_L1 <<- 5
+minClusSize_L2 <<- 5
+mcl.clusters <<- mcl(mcl.data.abs,inf_lev1,2000, verbose = T, heatmaps=F);
 junk <- matrix(mcl.clusters, ncol(mcl.data), ncol(mcl.data));
 mcl.list <<- collect.mcl.clusters2(junk,colnames(mcl.clusters),minClusSize_L1);
-}
 
+}
 
 output <- function(outputfile) {
-for(j in 1:length(mcl.list)){
-     if (j == 1) {
-	write.table(mcl.list[[j]], file=outputfile, sep=",", append=FALSE, col.names=NA, na="");
+mcl.listFull <- list();
+for(i in 1:length(mcl.list)){
+     if (i == 1) {
+	write.table(mcl.list[[i]], file=paste(outputfile,"1.clusters.csv",sep="."), sep=",", append=FALSE, col.names=NA, na="");
+	write.table(mcl.clusters, file=paste(outputfile,"1.clusters.values.csv",sep="."), sep=",", append=FALSE, col.names=NA, na="");
      }
      else {
-	write.table(mcl.list[[j]], file=outputfile, sep=",", append=TRUE, col.names=NA, na="");
+	write.table(mcl.list[[i]], file=paste(outputfile,"1.clusters.csv",sep="."), sep=",", append=TRUE, col.names=NA, na="");
+	write.table(mcl.clusters, file=paste(outputfile,"1.clusters.values.csv",sep="."), sep=",", append=TRUE, col.names=NA, na="");
      }
+        if(length(mcl.list[[i]]) >= minClusSize_L1 && length(mcl.list[[i]]) > 1){
+           new.data <- mcl.data[mcl.list[[i]], mcl.list[[i]]];
+           new.data[which(new.data<0)] <- 0
+           mcl.clusters2 <- mcl(new.data,inf_lev2,2000, verbose = F);
+           mcl.list2 <- collect.mcl.clusters2(mcl.clusters2, colnames(mcl.clusters2),minClusSize_L2);
+           mcl.listFull <- c(mcl.listFull, mcl.list2);
+           if(length(mcl.list2) > 0){
+                        for(j in 1:length(mcl.list2)){
+     if (j == 1) {
+	write.table(mcl.list2[[j]], file=paste(outputfile,"2.cluster", i, "csv", sep="."), sep=",", append=FALSE, col.names=NA, na="");
+	write.table(mcl.clusters2, file=paste(outputfile,"2.cluster", i, "values.csv", sep="."), sep=",", append=FALSE, col.names=NA, na="");
+     }
+     else {
+	write.table(mcl.list2[[j]], file=paste(outputfile,"2.cluster", i, "csv", sep="."), sep=",", append=TRUE, col.names=NA, na="");
+	write.table(mcl.clusters2, file=paste(outputfile,"2.cluster", i, "values.csv", sep="."), sep=",", append=TRUE, col.names=NA, na="");
+     }
+                        }
+           }
+        }
 }
+
+write.table(mcl.data[rle(unlist(mcl.listFull))$values, rle(unlist(mcl.listFull))$values], file=paste(outputfile,"sortedcorrelations.csv", sep="."), sep=",", append=FALSE, col.names=NA, na="");
+
+for (j in 1:length(mcl.listFull)) {
+   if (j == 1) {
+      write.table(mcl.listFull[[j]], file=paste(outputfile, "sortedclusters.csv", sep="."), sep=",", append=FALSE, col.names=NA, na="");
+   }
+   else {
+      write.table(mcl.listFull[[j]], file=paste(outputfile, "sortedclusters.csv", sep="."), sep=",", append=TRUE, col.names=NA, na="");
+   }
+}
+
 }
 
 
