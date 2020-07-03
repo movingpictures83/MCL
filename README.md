@@ -1,13 +1,13 @@
 # MCL
 # Language: R
 # Input: CSV (network)
-# Output: CSV (clusters)
-# Tested with: PluMA 1.0, R 3.2.5
+# Output: prefix 
+# Tested with: PluMA 1.1, R 4.0.0
 
 PluMA plugin to take a weighted network and run Markov Clustering (van Dongen, 2000).
 The plugin accepts as input a CSV file representing the network, with nodes represented
 as both rows and columns and entry (i, j) is the weight of the edge from node i to node j.
-The plugin then outputs clusters also as a CSV file, in the following format:
+The plugin then outputs clusters as separate CSV files using the output prefix, in the following format:
 
 "","x"
 "1","Family.Porphyromonadaceae.0005"
