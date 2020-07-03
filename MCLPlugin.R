@@ -9,7 +9,10 @@
 
 ########################################
 ## Functions
+#oldlog <- log
+dyn.load(paste("RPluMA", .Platform$dynlib.ext, sep=""))
 source("RPluMA.R")
+#log <- oldlog
 
 # Inflation step of MCL
 inflate <- function (M,
