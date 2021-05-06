@@ -35,10 +35,18 @@ mcl <- function (M, 	# Matrix
 		 verbose = F,
 		 heatmaps = F
 		 ) { 
-  for (i in 1:iter) {
+print("FXN")
+	print(nrow(M))
+      	for (i in 1:iter) {
     old.M <- M;
     M.norm <- norm(M);
+    #print("NORM")
+    #print(nrow(M))
+    #print(ncol(M))
+    #print(nrow(M.norm))
+    #print(ncol(M.norm))
     M <- M.norm%*%M.norm;
+    #print(nrow(M))
     M <- inflate(M, inf);
     M <- norm(M);
     if (sum(old.M == M) == dim(M)[1]*dim(M)[2]) {
@@ -68,7 +76,7 @@ collect.mcl.clusters2 <- function (M, Mrows, size 	# Matrix (mcl result)
   for (i in 1:dim(M)[1]) {
     nodes <- M.names[which(M[i,] != 0)];
     if (length(nodes) >= size && !clustered.nodes[which(M[i,] != 0)]) {
-		#print (nodes);
+		print (nodes);
 		#Add the nodes to the cluster list
 		cluster.list[[cluster.number]] <- nodes;
 		
@@ -82,11 +90,16 @@ collect.mcl.clusters2 <- function (M, Mrows, size 	# Matrix (mcl result)
 
 input <- function(inputfile) {
 #pc <- read.csv("Never.pvalued.csv");
-pc <<- read.csv(inputfile);
+pc <<- read.csv(inputfile, check.names=FALSE);
+print("XXX")
+print(nrow(pc))
+print(ncol(pc))
 }
 
 run <- function() {
-pc <<- pc[,-1] #Status is present
+#pc <<- pc[,-1] #Status is present
+#print(nrow(pc))
+#print(ncol(pc))
 
 mcl.data <<- as.matrix(pc)
 
@@ -119,9 +132,11 @@ inf_lev2 <<- 1.5
 minClusSize_L1 <<- 5
 minClusSize_L2 <<- 5
 mcl.clusters <<- mcl(mcl.data.abs,inf_lev1,2000, verbose = T, heatmaps=F);
+#print("HERE")
+#print(nrow(mcl.clusters))
+#print(ncol(mcl.clusters))
 junk <- matrix(mcl.clusters, ncol(mcl.data), ncol(mcl.data));
 mcl.list <<- collect.mcl.clusters2(junk,colnames(mcl.clusters),minClusSize_L1);
-
 }
 
 output <- function(outputfile) {
